@@ -1,0 +1,10 @@
+{
+    "type": "video",
+    "url": "http://dash.fokus.fraunhofer.de/tests/cba/FoVStreamer/media/oberwiesenthal/oberwiesenthal_3x3_dash_1000/video_tiled_dash_track2_1.m4s",
+    "number": 0,
+    "data": {},
+    "stats": {
+        "datalength": 21186,
+        "duration": 661
+    }
+}

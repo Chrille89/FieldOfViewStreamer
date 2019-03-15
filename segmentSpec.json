@@ -1,0 +1,22 @@
+[
+    {
+        "type": "video",
+        "url": "http://dash.fokus.fraunhofer.de/FoVStreamer/media/oberwiesenthal_3x3_dash_1000/video_tiled_dash_track2_1.m4s",
+        "number": 0
+    },
+    {
+        "type": "video",
+        "url": "http://dash.fokus.fraunhofer.de/FoVStreamer/media/oberwiesenthal_3x3_dash_5000/video_tiled_dash_track3_1.m4s",
+        "number": 1
+    },
+    {
+        "type": "video",
+        "url": "http://dash.fokus.fraunhofer.de/FoVStreamer/media/oberwiesenthal_3x3_dash_5000/video_tiled_dash_track4_1.m4s",
+        "number": 2
+    },
+    {
+        "type": "video",
+        "url": "http://dash.fokus.fraunhofer.de/FoVStreamer/media/oberwiesenthal_3x3_dash_1000/video_tiled_dash_track5_1.m4s",
+        "number": 3
+    }
+]
