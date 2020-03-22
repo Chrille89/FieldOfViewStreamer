@@ -25,6 +25,7 @@ var server = ws.createServer(function (conn) {
                 if(videoTracks[0].type == "init"){
                     let initBuffer = updateDashInit(videoTracks[0].data);
                     conn.send(Buffer.from(initBuffer)); 
+                    conn.sendText(JSON.stringify(videoTracks[0]));
                 } else {
                     let arrayBuffer = []
                     videoTracks.forEach(track => {
