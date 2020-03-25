@@ -3,17 +3,33 @@
  * Kaiserin-Augusta-Alle 31, 10562 Berlin, Germany
  * All rights reserved.
  */
-const ws = require("nodejs-websocket");
-const fetch = require('node-fetch')
+// Minimal amount of secure websocket server
+const fs = require('fs');
+const fetch = require('node-fetch');
+const https = require('https');
 const ISOBOXER = require("codem-isoboxer");
-const port = 3000;
+const port = 8443;
 
-/**
- * Main function
- */
-var server = ws.createServer(function (conn) {
-    console.log("New connection")
-    conn.on("text", function (str) {
+// read ssl certificate
+var privateKey = fs.readFileSync('ssl-cert/apache.key', 'utf8');
+var certificate = fs.readFileSync('ssl-cert/apache.crt', 'utf8');
+
+var credentials = { key: privateKey, cert: certificate };
+
+//pass in your credentials to create an https server
+var httpsServer = https.createServer(credentials);
+httpsServer.listen(port, function() {
+    console.log("Websocket is started and listen on port " + port + ".");
+ });
+
+var WebSocketServer = require('ws').Server;
+var wss = new WebSocketServer({
+    server: httpsServer
+});
+
+wss.on('connection', function connection(ws) {
+    ws.on('message', function incoming(str) {
+        console.log('received: %s', str);
         let tracks = JSON.parse(str);
         let promises = [];
 
@@ -24,30 +40,21 @@ var server = ws.createServer(function (conn) {
         Promise.all(promises).then(videoTracks => {
                 if(videoTracks[0].type == "init"){
                     let initBuffer = updateDashInit(videoTracks[0].data);
-                    conn.send(Buffer.from(initBuffer)); 
-                    conn.sendText(JSON.stringify(videoTracks[0]));
+                    ws.send(Buffer.from(initBuffer)); 
+                    ws.send(JSON.stringify(videoTracks[0]));
                 } else {
                     let arrayBuffer = []
                     videoTracks.forEach(track => {
                         arrayBuffer.push(track.data);
-                        conn.sendText(JSON.stringify(track));
+                        ws.send(JSON.stringify(track));
                     });
                     let videoBuffer = merge(arrayBuffer);
-                    conn.send(Buffer.from(videoBuffer));           
+                    ws.send(Buffer.from(videoBuffer));           
                     console.log("Sending video buffer to the app.");
                 }
             });
     });
-    conn.on("error", function (code, reason) {
-        console.error(code + " ; Reason: " + reason);
-    })
-    conn.on("close", function (code, reason) {
-        console.log("Connection closed.");
-    })
-}).listen(port, function () {
-    console.log("Server is started and listen on port " + port);
 });
-
 
 /**
  * Load a track from the server
