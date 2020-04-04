@@ -41,15 +41,15 @@ wss.on('connection', function connection(ws) {
                 if(videoTracks[0].type == "init"){
                     let initBuffer = updateDashInit(videoTracks[0].data);
                     ws.send(Buffer.from(initBuffer)); 
-                    ws.send(JSON.stringify(videoTracks[0]));
+                    ws.send(JSON.stringify(videoTracks));
                 } else {
                     let arrayBuffer = []
                     videoTracks.forEach(track => {
                         arrayBuffer.push(track.data);
-                        ws.send(JSON.stringify(track));
                     });
                     let videoBuffer = merge(arrayBuffer);
-                    ws.send(Buffer.from(videoBuffer));           
+                    ws.send(Buffer.from(videoBuffer));
+                    ws.send(JSON.stringify(videoTracks));           
                     console.log("Sending video buffer to the app.");
                 }
             });
