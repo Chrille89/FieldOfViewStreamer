@@ -1,19 +1,17 @@
-/*
- * Copyright (c) 2018 by Fraunhofer FOKUS
- * Kaiserin-Augusta-Alle 31, 10562 Berlin, Germany
- * All rights reserved.
- */
+
 // Minimal amount of secure websocket server
 const fs = require('fs');
 const fetch = require('node-fetch');
 const https = require('https');
 const ISOBOXER = require("codem-isoboxer");
 const port = 8443;
+const nodeFetchAgent = new https.Agent({
+    rejectUnauthorized: false
+})
 
 // read ssl certificate
 var privateKey = fs.readFileSync('ssl-cert/apache.key', 'utf8');
 var certificate = fs.readFileSync('ssl-cert/apache.crt', 'utf8');
-
 var credentials = { key: privateKey, cert: certificate };
 
 //pass in your credentials to create an https server
@@ -65,7 +63,7 @@ function fetchSegmentBufferByUri(track) {
         let beginTime = Date.now();
         let tileTrack = track;
         console.log("Load segment by url: " + tileTrack.url);
-        fetch(tileTrack.url)
+        fetch(tileTrack.url, { agent : nodeFetchAgent })
           .then(function (res) {
             return res.arrayBuffer()
           })
